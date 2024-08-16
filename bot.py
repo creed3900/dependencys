@@ -20,7 +20,7 @@ ascii_art = r"""
 """
 # Print the ASCII art in blue
 print(f"{CUSTOM_COLOR}{ascii_art}{RESET}", file=stream)
-print(f"{CUSTOM_COLOR}Commands | chn, end, invite, leave, list, nuke", file=stream)
+print(f"{CUSTOM_COLOR}Commands | chn, dmnuke, end, endm, invite, leave, list, nuke", file=stream)
 print(f"{CUSTOM_COLOR}Made by  | bf3k/bf3k.vip", file=stream)
 print()
 sys.stderr = open(os.devnull, 'w')
@@ -188,6 +188,7 @@ async def list(ctx):
             await ctx.author.send("I'm not in any servers.")
     else:
         await ctx.send("This command can only be used in DMs.")
+
 @bot.command()
 async def leave(ctx, server_id: str):
     if ctx.author.id != YOUR_DISCORD_USER_ID:
@@ -203,6 +204,39 @@ async def leave(ctx, server_id: str):
         await ctx.author.send(f"Leaving the server: {server.name}.")
         print(f"Leaving the server: {server.name}.")
         await server.leave()
+    else:
+        await ctx.send("This command can only be used in DMs.")
+
+@bot.command()
+async def dmnuke(ctx, user_id: str, *, message: str):
+    if ctx.author.id != YOUR_DISCORD_USER_ID:
+        return  # Ignore the command if it's not from you
+    user = await bot.fetch_user(user_id)
+    global dmspam
+    dmspam = True  # Set the flag to True to start sending messages
+    await ctx.author.send(f"Started sending messages to {user.name} with message: {message}")
+    print(f"Started sending messages to {user.name} with message: {message}")
+    hue = 0.0
+    while dmspam:
+        try:
+            await user.send(message)
+            print_rainbow_line(f"Sent message to {user.name}", hue)
+            hue = increase_hue(hue, 0.01)
+        except discord.errors.HTTPException as e:
+            print(f"Failed to send message to {user.name}: {e}")
+        if not dmspam:
+            break
+
+@bot.command()
+async def endm(ctx, user_id: str):
+    if ctx.author.id != YOUR_DISCORD_USER_ID:
+        return  # Ignore the command if it's not from you
+    global dmspam
+    user = await bot.fetch_user(user_id)
+    if isinstance(ctx.channel, discord.DMChannel):
+        dmspam = False  # Set the flag to False to stop sending messages
+        await ctx.send(f"Stopped sending messages to {user.name}.")
+        print(f"Stopped sending messages to {user.name}.")
     else:
         await ctx.send("This command can only be used in DMs.")
 # Run the bot
