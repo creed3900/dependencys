@@ -2,11 +2,14 @@ import discord
 from discord.ext import commands
 import asyncio
 import colorsys
-from colorama import Fore, Style, init
+from colorama import Fore, Style, init, AnsiToWin32
 import time
 import sys
 import os
-init(autoreset=True)
+init(wrap=False)
+stream = AnsiToWin32(sys.stdout).stream
+CUSTOM_COLOR = '\033[38;2;199;170;246m'
+RESET = '\033[0m'
 ascii_art = r"""
 ██████╗ ███████╗██████╗ ██╗  ██╗    ███╗   ██╗██╗   ██╗██╗  ██╗███████╗██████╗ 
 ██╔══██╗██╔════╝╚════██╗██║ ██╔╝    ████╗  ██║██║   ██║██║ ██╔╝██╔════╝██╔══██╗
@@ -16,9 +19,9 @@ ascii_art = r"""
 ╚═════╝ ╚═╝     ╚═════╝ ╚═╝  ╚═╝    ╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝      
 """
 # Print the ASCII art in blue
-print(Fore.CYAN + ascii_art)
-print(Fore.CYAN + "Commands | chn, end, invite, leave, list, nuke")
-print(Fore.CYAN + "Made by  | bf3k/bf3k.vip")
+print(f"{CUSTOM_COLOR}{ascii_art}{RESET}", file=stream)
+print(f"{CUSTOM_COLOR}Commands | chn, end, invite, leave, list, nuke", file=stream)
+print(f"{CUSTOM_COLOR}Made by  | bf3k/bf3k.vip", file=stream)
 print()
 sys.stderr = open(os.devnull, 'w')
 with open("userid.txt", 'r') as file:
