@@ -21,7 +21,7 @@ ascii_art = r"""
 # Print the ASCII art in blue
 print(f"{CUSTOM_COLOR}{ascii_art}{RESET}", file=stream)
 print(f"{CUSTOM_COLOR}Commands | chn, dmnuke, end, endm, invite, leave, list, nuke", file=stream)
-print(f"{CUSTOM_COLOR}Made by  | bf3k/bf3k.vip", file=stream)
+print(f"{CUSTOM_COLOR}Made by  | bf3k", file=stream)
 print()
 sys.stderr = open(os.devnull, 'w')
 with open("userid.txt", 'r') as file:
