@@ -67,7 +67,7 @@ continue_sending = False
 async def on_ready():
     user = await bot.fetch_user(YOUR_DISCORD_USER_ID)
     print(Fore.GREEN + f'Successfully logged in as {bot.user}')
-    print(Fore.GREEN + f'Receiving Commands from {user.name}#{user.discriminator}{RESET}')
+    print(Fore.GREEN + f'Receiving Commands from {user.name}{RESET}')
     print()
     await user.send("Nuke Bot Ready for Action")
 
