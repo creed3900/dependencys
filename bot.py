@@ -182,7 +182,7 @@ async def list(ctx):
         for guild in bot.guilds:
             embed.add_field(
                 name=guild.name,
-                value=f"ID:```{guild.id}```",
+                value=f"```{guild.id}```",
                 inline=False
             )
 
