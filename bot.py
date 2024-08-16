@@ -92,7 +92,7 @@ async def chn(ctx, server_id: str, amount: int, *, name: str):
             except discord.errors.HTTPException as e:
                 print(f"Failed to delete channel {channel.name}: {e}")
             await asyncio.sleep(0.1)  # Add a small delay to avoid overwhelming the server
-        await asyncio.sleep(5)  # Ensure all channels are deleted
+        await asyncio.sleep(1)  # Ensure all channels are deleted
         new_channels = []
         for i in range(1, amount + 1):
             try:
@@ -222,6 +222,7 @@ async def dmnuke(ctx, user_id: str, *, message: str):
             await user.send(message)
             print_rainbow_line(f"Sent message to {user.name}", hue)
             hue = increase_hue(hue, 0.01)
+            await asyncio.sleep(0.2)
         except discord.errors.HTTPException as e:
             print(f"Failed to send message to {user.name}: {e}")
         if not dmspam:
